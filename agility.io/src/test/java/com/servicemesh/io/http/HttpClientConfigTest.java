@@ -18,6 +18,7 @@
 package com.servicemesh.io.http;
 
 import javax.net.ssl.KeyManager;
+import javax.net.ssl.TrustManager;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,7 +33,11 @@ public class HttpClientConfigTest
     {
         KeyManager keyMgr = new KeyManager() {
         };
+
         KeyManager[] keyMgrs = new KeyManager[] { keyMgr };
+        TrustManager trustMgr = new TrustManager() {
+        };
+        TrustManager[] trustMgrs = new TrustManager[] { trustMgr };
         Credentials creds = new Credentials(Credentials.CredentialsType.CREDENTIALS_TYPE_USERNAMEPASSORD);
         Proxy proxy = new Proxy("localhost", 1080, ProxyType.HTTP_PROXY, null);
         IHttpClientConfigBuilder builder = HttpClientFactory.getInstance().getConfigBuilder();
@@ -44,7 +49,7 @@ public class HttpClientConfigTest
         Assert.assertNull(config.getRetries());
         Assert.assertNull(config.getMaxConnections());
         Assert.assertNull(config.getKeyManagers());
-        Assert.assertNull(config.getKeyManagers());
+        Assert.assertNull(config.getTrustManagers());
         Assert.assertNull(config.getCredentials());
         Assert.assertNull(config.getProxy());
 
@@ -54,6 +59,7 @@ public class HttpClientConfigTest
         builder.setRetries(4);
         builder.setMaxConnections(23);
         builder.setKeyManagers(keyMgrs);
+        builder.setTrustManagers(trustMgrs);
         builder.setCredentials(creds);
         builder.setProxy(proxy);
         config = builder.build();
@@ -69,6 +75,8 @@ public class HttpClientConfigTest
         Assert.assertEquals(23, config.getMaxConnections().intValue());
         Assert.assertNotNull(config.getKeyManagers());
         Assert.assertEquals(1, config.getKeyManagers().length);
+        Assert.assertNotNull(config.getTrustManagers());
+        Assert.assertEquals(1, config.getTrustManagers().length);
         Assert.assertNotNull(config.getCredentials());
         Assert.assertEquals(Credentials.CredentialsType.CREDENTIALS_TYPE_USERNAMEPASSORD, config.getCredentials().getType());
         Assert.assertNotNull(config.getProxy());
