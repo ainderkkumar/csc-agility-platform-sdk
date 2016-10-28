@@ -149,10 +149,7 @@ public class HttpClientConfigTest
     {
         KeyManager keyMgr = new KeyManager() {
         };
-
         KeyManager[] keyMgrs = new KeyManager[] { keyMgr };
-        TrustManager trustMgr = new TrustManager() {
-        };
         TrustManager[] trustMgrs = getValidTrustManager();
         Credentials creds = new Credentials(Credentials.CredentialsType.CREDENTIALS_TYPE_USERNAMEPASSORD);
         Proxy proxy = new Proxy("localhost", 1080, ProxyType.HTTP_PROXY, null);
@@ -210,24 +207,18 @@ public class HttpClientConfigTest
         return trustManagers;
     }
 
-    public static KeyStore createTrustStore(String capem)
+    public static KeyStore createTrustStore(String capem) throws Exception
     {
         KeyStore trustStore = null;
-        try
-        {
-            trustStore = KeyStore.getInstance("JKS");
-            Reader certReader = new StringReader(capem);
-            PEMParser pemParser = new PEMParser(certReader);
-            X509CertificateHolder certificateHolder = (X509CertificateHolder) pemParser.readObject();
-            Certificate caCertificate = new JcaX509CertificateConverter()
-                    .setProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider()).getCertificate(certificateHolder);
-            trustStore.load(null);
-            trustStore.setCertificateEntry("ca", caCertificate);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        trustStore = KeyStore.getInstance("JKS");
+        Reader certReader = new StringReader(capem);
+        PEMParser pemParser = new PEMParser(certReader);
+        X509CertificateHolder certificateHolder = (X509CertificateHolder) pemParser.readObject();
+        Certificate caCertificate = new JcaX509CertificateConverter()
+                .setProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider()).getCertificate(certificateHolder);
+        trustStore.load(null);
+        trustStore.setCertificateEntry("ca", caCertificate);
+
         return trustStore;
     }
 }
