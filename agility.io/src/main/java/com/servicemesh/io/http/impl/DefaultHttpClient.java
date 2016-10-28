@@ -381,7 +381,7 @@ public class DefaultHttpClient implements IHttpClient
     private void setSSLContext(final HttpAsyncClientBuilder builder, final IHttpClientConfig config)
     {
         TrustManager[] trustManagers = null;
-        if (config != null && config.getTrustManagers() != null)
+        if (config != null && config.getTrustManagers() != null && config.getTrustManagers().length > 0)
         {
             trustManagers = config.getTrustManagers();
         }
@@ -395,7 +395,6 @@ public class DefaultHttpClient implements IHttpClient
         try
         {
             SSLContext sslContext = SSLContext.getInstance("TLS");
-            //sslContext.init(keyManagers, new TrustManager[] { trustManager }, null);
             sslContext.init(keyManagers, trustManagers, null);
             builder.setSSLStrategy(new SSLIOSessionStrategy(sslContext));
         }
@@ -410,7 +409,7 @@ public class DefaultHttpClient implements IHttpClient
         RegistryBuilder<SchemeIOSessionStrategy> builder = RegistryBuilder.create();
 
         TrustManager[] trustManagers = null;
-        if (config != null && config.getTrustManagers() != null)
+        if (config != null && config.getTrustManagers() != null && config.getTrustManagers().length > 0)
         {
             trustManagers = config.getTrustManagers();
         }
@@ -425,7 +424,6 @@ public class DefaultHttpClient implements IHttpClient
         try
         {
             SSLContext sslContext = SSLContext.getInstance("TLS");
-            //sslContext.init(keyManagers, new TrustManager[] { trustManager }, null);
             sslContext.init(keyManagers, trustManagers, null);
             builder.register("https", new HttpsIOSessionStrategy(sslContext, SSLIOSessionStrategy.ALLOW_ALL_HOSTNAME_VERIFIER));
         }
